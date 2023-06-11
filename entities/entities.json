@@ -1,0 +1,23 @@
+{
+    "id": "urn:ngsi-ld:Supermarket:id:001",
+    "type": "Supermarket",
+    "name": "F Summit Supermarket",
+    "capacity": 200,
+    "occupancy": 50,
+    "dateObserved": "2023-06-11T21:09:57Z",
+    "@context": [
+        "https://smartdatamodels.org/context.jsonld"
+    ]
+},
+
+{
+    "id": "urn:ngsi-ld:SupermarketForecast:id:001",
+    "type": "Supermarket",
+    "name": "F Summit Supermarket",
+    "capacity": 200,
+    "occupancy": 50,
+    "dateObserved": "2023-06-11T23:09:57Z",
+    "@context": [
+        "https://smartdatamodels.org/context.jsonld"
+    ]
+}
