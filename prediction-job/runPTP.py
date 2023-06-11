@@ -10,7 +10,7 @@ class S():
         logging.info("Packaging program with maven")
         mypath = './prediction-job'
         os.chdir(mypath)
-        p = subprocess.Popen(["mvn package"],shell=True, stdout = subprocess.PIPE)
+        p = subprocess.Popen(["mvn clean package"],shell=True, stdout = subprocess.PIPE)
         output, err = p.communicate()
         os.chdir("..")
         print(output)
@@ -20,8 +20,7 @@ class S():
 
 
 if __name__ == "__main__":
-
-    print("Spark Jar generated")
+    print("=================================")
+    print("Generating JAR")
+    print("=================================")
     S().execute_maven()
-
-

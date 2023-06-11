@@ -102,7 +102,7 @@ under the License.
 		<dependency>
 			<groupId>org.fiware.cosmos</groupId>
 			<artifactId>orion.spark.connector</artifactId>
-			<version>1.0</version>
+			<version>1.2.2.1</version>
 		</dependency>
 
 		<!-- https://mvnrepository.com/artifact/org.json4s/json4s-jackson -->

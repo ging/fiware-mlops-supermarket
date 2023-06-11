@@ -1,7 +1,7 @@
 package org.fiware.cosmos.orion.spark.connector.prediction
 
 import org.apache.spark.streaming.{Seconds, StreamingContext}
-import org.fiware.cosmos.orion.spark.connector.{ContentType, HTTPMethod, OrionReceiver, OrionSink, OrionSinkObject}
+import org.fiware.cosmos.orion.spark.connector.{ContentType, HTTPMethod, NGSILDReceiver, OrionSink, OrionSinkObject}
 import org.apache.spark.ml.feature.{VectorAssembler}
 import org.apache.spark.ml.regression.{RandomForestRegressionModel}
 import org.apache.spark.sql.SparkSession
@@ -9,13 +9,13 @@ import org.apache.spark.sql.SparkSession
 
 case class PredictionResponse(socketId: String, predictionId: String, predictionValue: Int, year: Int, month: Int, day: Int, time: Int) {
   override def toString :String = s"""{
-  "socketId": { "value": "${socketId}", "type": "String"},
-  "predictionId": { "value":"${predictionId}", "type": "String"},
-  "predictionValue": { "value":${predictionValue}, "type": "Integer"},
-  "year": { "value":${year}, "type": "Integer"},
-  "month": { "value":${month}, "type": "Integer"},
-  "day": { "value":${day}, "type": "Integer"},
-  "time": { "value": ${time}, "type": "Integer"}
+  "socketId": { "value": "${socketId}", "type": "Property"},
+  "predictionId": { "value":"${predictionId}", "type": "Property"},
+  "predictionValue": { "value":${predictionValue}, "type": "Property"},
+  "year": { "value":${year}, "type": "Property"},
+  "month": { "value":${month}, "type": "Property"},
+  "day": { "value":${day}, "type": "Property"},
+  "time": { "value": ${time}, "type": "Property"}
   }""".trim()
 }
 case class PredictionRequest(year: Int, month: Int, day: Int, weekDay: Int, time: Int, socketId: String, predictionId: String)
@@ -24,7 +24,7 @@ object PredictionJob {
 
   final val HOST_CB = sys.env.getOrElse("HOST_CB", "localhost")
   final val MODEL_VERSION = sys.env.getOrElse("MODEL_VERSION", "1")
-  final val URL_CB = s"http://$HOST_CB:1026/v2/entities/ResTicketPrediction1/attrs"
+  final val URL_CB = s"http://$HOST_CB:1026/ngsi-ld/v1/entities/ResTicketPrediction1/attrs"
   final val CONTENT_TYPE = ContentType.JSON
   final val METHOD = HTTPMethod.PATCH
   final val MODEL_PATH = s"./prediction-job/model/$MODEL_VERSION"
@@ -49,19 +49,19 @@ object PredictionJob {
     val model = RandomForestRegressionModel.load(MODEL_PATH)
 
     // Create Orion Source. Receive notifications on port 9001
-    val eventStream = ssc.receiverStream(new OrionReceiver(9001))
+    val eventStream = ssc.receiverStream(new NGSILDReceiver(9001))
 
     // Process event stream to get updated entities
     val processedDataStream = eventStream
       .flatMap(event => event.entities)
       .map(ent => {
-        val year = ent.attrs("year").value.toString.toInt
-        val month = ent.attrs("month").value.toString.toInt
-        val day = ent.attrs("day").value.toString.toInt
-        val time = ent.attrs("time").value.toString.toInt
-        val weekDay = ent.attrs("weekDay").value.toString.toInt
-        val socketId = ent.attrs("socketId").value.toString
-        val predictionId = ent.attrs("predictionId").value.toString
+        val year = ent.attrs("year")("value").toString.toInt
+        val month = ent.attrs("month")("value").toString.toInt
+        val day = ent.attrs("day")("value").toString.toInt
+        val time = ent.attrs("time")("value").toString.toInt
+        val weekDay = ent.attrs("weekDay")("value").toString.toInt
+        val socketId = ent.attrs("socketId")("value").toString
+        val predictionId = ent.attrs("predictionId")("value").toString
         PredictionRequest(year, month, day, weekDay, time, socketId, predictionId)
       })
 
