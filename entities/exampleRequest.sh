@@ -1,4 +1,4 @@
-curl --location --request PATCH 'http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:ReqPrediction1/attrs' \
+curl --location --request PATCH 'http://localhost:1026/ngsi-ld/v1/entities/urn:ngsi-ld:Supermarket:001/attrs' \
 --header 'Content-Type: application/json' \
 --data-raw '{
    "year": {
@@ -21,12 +21,12 @@ curl --location --request PATCH 'http://localhost:1026/ngsi-ld/v1/entities/urn:n
        "type": "Property",
        "value": 2
    },
-   "predictionId":{
+   "occupancy":{
       "type":"Property",
-      "value":"p-1662768034900"
+      "value":50
    },
-   "socketId":{
+   "capacity":{
       "type":"Property",
-      "value":"Fn0kKHEF-dOcr311AAAF"
+      "value": 60
    }
 }'

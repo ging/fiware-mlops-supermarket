@@ -7,18 +7,17 @@ import org.apache.spark.ml.regression.{RandomForestRegressionModel}
 import org.apache.spark.sql.SparkSession
 
 
-case class PredictionResponse(socketId: String, predictionId: String, predictionValue: Int, year: Int, month: Int, day: Int, time: Int) {
+case class PredictionResponse(capacity: Int, occupancy: Int, year: Int, month: Int, day: Int, time: Int) {
   override def toString :String = s"""{
-  "socketId": { "value": "${socketId}", "type": "Property"},
-  "predictionId": { "value":"${predictionId}", "type": "Property"},
-  "predictionValue": { "value":${predictionValue}, "type": "Property"},
+  "capacity": { "value": "${capacity}", "type": "Property"},
+  "occupancy": { "value":"${occupancy}", "type": "Property"},
   "year": { "value":${year}, "type": "Property"},
   "month": { "value":${month}, "type": "Property"},
   "day": { "value":${day}, "type": "Property"},
   "time": { "value": ${time}, "type": "Property"}
   }""".trim()
 }
-case class PredictionRequest(year: Int, month: Int, day: Int, weekDay: Int, time: Int, socketId: String, predictionId: String)
+case class PredictionRequest(year: Int, month: Int, day: Int, weekDay: Int, time: Int, capacity: Int)
 
 object PredictionJob {
 
@@ -60,9 +59,8 @@ object PredictionJob {
         val day = ent.attrs("day")("value").toString.toInt
         val time = ent.attrs("time")("value").toString.toInt
         val weekDay = ent.attrs("weekDay")("value").toString.toInt
-        val socketId = ent.attrs("socketId")("value").toString
-        val predictionId = ent.attrs("predictionId")("value").toString
-        PredictionRequest(year, month, day, weekDay, time, socketId, predictionId)
+        val capacity = ent.attrs("capacity")("value").toString.toInt
+        PredictionRequest(year, month, day, weekDay, time, capacity)
       })
 
     // Feed each entity into the prediction model
@@ -74,17 +72,16 @@ object PredictionJob {
           .transform(df)
         val predictions = model
           .transform(vectorizedFeatures)
-          .select("socketId","predictionId", "prediction", "year", "month", "day", "time")
+          .select("capacity", "prediction", "year", "month", "day", "time")
 
         predictions.toJavaRDD
     })
-      .map(pred=> PredictionResponse(pred.get(0).toString,
-        pred.get(1).toString,
-        pred.get(2).toString.toFloat.round,
+      .map(pred=> PredictionResponse(pred.get(0).toString.toInt,
+        pred.get(1).toString.toFloat.round,
+        pred.get(2).toString.toInt,
         pred.get(3).toString.toInt,
         pred.get(4).toString.toInt,
-        pred.get(5).toString.toInt,
-        pred.get(6).toString.toInt)
+        pred.get(5).toString.toInt)
     )
 
     // Convert the output to an OrionSinkObject and send to Context Broker

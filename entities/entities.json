@@ -1,7 +1,7 @@
 {
     "id": "urn:ngsi-ld:Supermarket:id:001",
     "type": "Supermarket",
-    "name": "F Summit Supermarket",
+    "name": "F Summit Vienna Supermarket",
     "capacity": 200,
     "occupancy": 50,
     "dateObserved": "2023-06-11T21:09:57Z",
@@ -12,8 +12,8 @@
 
 {
     "id": "urn:ngsi-ld:SupermarketForecast:id:001",
-    "type": "Supermarket",
-    "name": "F Summit Supermarket",
+    "type": "SupermarketForecast",
+    "name": "F Summit Vienna Supermarket",
     "capacity": 200,
     "occupancy": 50,
     "dateObserved": "2023-06-11T23:09:57Z",
