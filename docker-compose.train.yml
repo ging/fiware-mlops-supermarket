@@ -1,20 +1,18 @@
 version: "3.5"
 services:
-  maven:
-    # image: ging/maven
-    build: ./prediction-job
-    container_name: maven
-    expose:
-      - "8099"
-    ports:
-      - "8099:8099"
-    environment:
-      - "SPARK_MASTER=spark-masterspark-master-train:7077"
-    volumes:
-      - ./prediction-job:/prediction-job
-    # command: bash -c "sleep 1000"
-    networks:
-      - fiware
+  # maven:
+  #   build: ./prediction-job
+  #   container_name: maven
+  #   expose:
+  #     - "8099"
+  #   ports:
+  #     - "8099:8099"
+  #   environment:
+  #     - "SPARK_MASTER=spark-masterspark-master-train:7077"
+  #   volumes:
+  #     - ./prediction-job:/prediction-job
+  #   networks:
+  #     - fiware
   
   # spark-master-train:
   #   image: bde2020/spark-master:2.4.5-hadoop2.7
