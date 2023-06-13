@@ -6,7 +6,7 @@ const highlightNewElement = (element) => {
 }
 const queryDataFromOrion = async (date) => {
   try {
-    const response = await fetch("/entities", {
+    const response = await fetch("http://localhost:3000/entities", {
       headers: { "Content-Type": "application/json" },
       method: "GET",
     });

@@ -16,7 +16,7 @@ curl -v  orion:1026/ngsi-ld/v1/subscriptions/ -s -S -H 'Content-Type: applicatio
     ],
   "notification": {
     "endpoint": {
-      "uri": "http://spark-submit-predict:9001",
+      "uri": "http://spark-worker:9001",
       "accept": "application/json"
     }
   },

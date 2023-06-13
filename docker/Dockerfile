@@ -1,4 +1,4 @@
-FROM ubuntu:20.04
+FROM ubuntu:20.04 as base
 
 ENV ENABLE_INIT_DAEMON false
 ENV INIT_DAEMON_BASE_URI http://identifier/init-daemon
@@ -50,9 +50,37 @@ RUN pip3 install -r /requirements.txt
 # Note: this is needed when you use Python 3.3 or greater
 ENV PYTHONHASHSEED 1
 
+FROM base as master
+
+COPY master.sh /
+
 ENV SPARK_MASTER_PORT 7077
 ENV SPARK_MASTER_WEBUI_PORT 8080
 ENV SPARK_MASTER_LOG /spark/logs
 
 EXPOSE 8080 7077 6066
+
 CMD ["/bin/bash", "/master.sh"]
+
+
+FROM base as worker
+
+COPY worker.sh /
+
+ENV SPARK_WORKER_WEBUI_PORT 8081
+ENV SPARK_WORKER_LOG /spark/logs
+ENV SPARK_MASTER "spark://spark-master:7077"
+
+EXPOSE 8081
+
+CMD ["/bin/bash", "/worker.sh"]
+
+
+FROM base as submit
+
+ENV SPARK_MASTER_NAME spark-master
+ENV SPARK_MASTER_PORT 7077
+
+COPY submit.sh /
+
+CMD ["/bin/bash", "/submit.sh"]

@@ -1,0 +1,23 @@
+version: "3.5"
+services:  
+  spark-submit-predict:
+    build:
+      context: ./docker
+      target: submit
+    container_name: spark-submit-predict
+    ports:
+      - "4041:4040"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "constraint:node==spark-submit"
+      - "SERVER=proxy"
+      - "HOST_CB=orion"
+      - "MLFLOW_HOST=mlflow-server"
+      - "MODEL_VERSION=1"
+    command: bash -c "sleep 15; sh /prediction-job/run-spark-jobs-predict.sh"
+    networks:
+      - fiware
+    volumes:
+      - ./prediction-job:/prediction-job
+networks:
+  fiware:

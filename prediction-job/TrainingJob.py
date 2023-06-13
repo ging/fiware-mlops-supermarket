@@ -11,9 +11,10 @@ import mlflow.tracking
 import mlflow.spark
 import os
 import datetime
+import multiprocessing
 
-#MASTER = os.environ.get("SPARK_MASTER", "local[*]")
-MASTER = "local[*]"
+MASTER = os.environ.get("SPARK_MASTER", "local[*]")
+#MASTER = "local[*]"
 MLFLOW_HOST = os.environ.get("MLFLOW_HOST", "localhost")
 CSV_FILE = os.environ.get("CSV_FILE", "carrefour_data_v0.csv")
 MLFLOW_URI = "http://"+MLFLOW_HOST+":5000"
@@ -35,7 +36,11 @@ def train():
     
     mlflow.set_experiment_tag("createdAt", datetime.datetime.now().strftime("%Y-%m-%d_%H-%M-%S-%f"))
 
-    spark = SparkSession.builder.appName("MLOpsTrainingSupermarket").master(MASTER).getOrCreate()
+    spark = SparkSession.builder \
+        .appName("PredictionJob") \
+        .master(MASTER) \
+        .config("spark.cores.max", str(int(multiprocessing.cpu_count() / 2))) \
+        .getOrCreate()
 
     spark.sparkContext.setLogLevel("WARN")
 

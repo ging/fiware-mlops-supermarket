@@ -23,6 +23,7 @@ case class PredictionRequest(year: Int, month: Int, day: Int, weekDay: Int, time
 object PredictionJob {
 
   final val HOST_CB = sys.env.getOrElse("HOST_CB", "localhost")
+  final val MASTER = sys.env.getOrElse("SPARK_MASTER", "local[*]")
   final val MODEL_VERSION = sys.env.getOrElse("MODEL_VERSION", "1")
   final val URL_CB = s"http://$HOST_CB:1026/ngsi-ld/v1/entities/urn:ngsi-ld:SupermarketForecast:001/attrs"
   final val CONTENT_TYPE = ContentType.JSON
@@ -34,7 +35,8 @@ object PredictionJob {
     val spark = SparkSession
       .builder
       .appName("PredictionJob")
-      .master("local[*]")
+      .master(MASTER)
+      .config("spark.cores.max", (Runtime.getRuntime.availableProcessors / 2).toString)
       .getOrCreate()
     import spark.implicits._
     spark.sparkContext.setLogLevel("WARN")

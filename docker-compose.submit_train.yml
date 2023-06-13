@@ -1,0 +1,27 @@
+version: "3.5"
+services:
+  spark-submit-train:
+    build:
+      context: ./docker
+      target: submit
+    container_name: spark-submit-train
+    depends_on:
+      - spark-master
+      - spark-worker
+    ports:
+      - "4040:4040"
+    environment:
+      - "SPARK_MASTER=spark://spark-master:7077"
+      - "constraint:node==spark-submit-train"
+      - "SERVER=proxy"
+      - "MLFLOW_HOST=mlflow-server"
+      - "CSV_FILE=carrefour_data_v0.csv"
+    command: bash -c "sleep 20; sh /prediction-job/run-spark-jobs-train.sh"
+    volumes:
+      - ./prediction-job:/prediction-job
+    networks:
+      - fiware
+
+networks:
+  fiware:
+

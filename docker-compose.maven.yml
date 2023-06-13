@@ -1,0 +1,17 @@
+version: "3.5"
+services:
+  maven:
+    build: ./prediction-job
+    container_name: maven
+    expose:
+      - "8099"
+    ports:
+      - "8099:8099"
+    volumes:
+      - ./prediction-job:/prediction-job
+    networks:
+      - fiware
+
+networks:
+  fiware:
+
