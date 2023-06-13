@@ -1,4 +1,3 @@
-prediction-job/target/*
 prediction-job/model/*
 prediction-job/.idea
 web/node_modules/*

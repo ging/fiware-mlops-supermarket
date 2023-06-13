@@ -4,6 +4,10 @@ curl orion:1026/ngsi-ld/v1/entities -s -S -H 'Content-Type: application/ld+json'
 {
     "id": "urn:ngsi-ld:Supermarket:001",
     "type": "Supermarket",
+    "name": {
+      "value": "F. Summit Supermarket",
+      "type": "Property"
+    },
     "capacity": {
         "value": 50,
         "type": "Property"
@@ -32,6 +36,10 @@ curl orion:1026/ngsi-ld/v1/entities -s -S -H 'Content-Type: application/ld+json'
         "value": 5,
         "type": "Property"
       },
+      "dateObserved": {
+        "value": 0,
+        "type": "Property"
+      },
     "@context": [
       "https://uri.etsi.org/ngsi-ld/v1/ngsi-ld-core-context.jsonld"
     ]
@@ -45,9 +53,13 @@ EOF
 curl orion:1026/ngsi-ld/v1/entities -s -S -H 'Content-Type: application/ld+json' -d @- <<EOF
 {
     "id": "urn:ngsi-ld:SupermarketForecast:001",
-    "type": "SupermarketForecast",
+    "type": "Supermarket",
+    "name": {
+      "value": "F. Summit Supermarket Forecast",
+      "type": "Property"
+    },
     "capacity": {
-        "value": 0,
+        "value": 50,
         "type": "Property"
       },
       "occupancy": {
@@ -71,6 +83,10 @@ curl orion:1026/ngsi-ld/v1/entities -s -S -H 'Content-Type: application/ld+json'
         "type": "Property"
       },
       "weekDay": {
+        "value": 0,
+        "type": "Property"
+      },
+      "dateObserved": {
         "value": 0,
         "type": "Property"
       },

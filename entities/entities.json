@@ -12,7 +12,7 @@
 
 {
     "id": "urn:ngsi-ld:SupermarketForecast:id:001",
-    "type": "SupermarketForecast",
+    "type": "Supermarket",
     "name": "F Summit Vienna Supermarket",
     "capacity": 200,
     "occupancy": 50,

@@ -7,23 +7,24 @@ import org.apache.spark.ml.regression.{RandomForestRegressionModel}
 import org.apache.spark.sql.SparkSession
 
 
-case class PredictionResponse(capacity: Int, occupancy: Int, year: Int, month: Int, day: Int, time: Int) {
+case class PredictionResponse(capacity: Int, occupancy: Int, year: Int, month: Int, day: Int, time: Int, dateObserved: String) {
   override def toString :String = s"""{
   "capacity": { "value": "${capacity}", "type": "Property"},
   "occupancy": { "value":"${occupancy}", "type": "Property"},
   "year": { "value":${year}, "type": "Property"},
   "month": { "value":${month}, "type": "Property"},
   "day": { "value":${day}, "type": "Property"},
-  "time": { "value": ${time}, "type": "Property"}
+  "time": { "value": ${time}, "type": "Property"},
+  "dateObserved": { "value": "${dateObserved}", "type": "Property"}
   }""".trim()
 }
-case class PredictionRequest(year: Int, month: Int, day: Int, weekDay: Int, time: Int, capacity: Int)
+case class PredictionRequest(year: Int, month: Int, day: Int, weekDay: Int, time: Int, capacity: Int, dateObserved: String)
 
 object PredictionJob {
 
   final val HOST_CB = sys.env.getOrElse("HOST_CB", "localhost")
   final val MODEL_VERSION = sys.env.getOrElse("MODEL_VERSION", "1")
-  final val URL_CB = s"http://$HOST_CB:1026/ngsi-ld/v1/entities/ResTicketPrediction1/attrs"
+  final val URL_CB = s"http://$HOST_CB:1026/ngsi-ld/v1/entities/urn:ngsi-ld:SupermarketForecast:001/attrs"
   final val CONTENT_TYPE = ContentType.JSON
   final val METHOD = HTTPMethod.PATCH
   final val MODEL_PATH = s"./prediction-job/model/$MODEL_VERSION"
@@ -60,7 +61,8 @@ object PredictionJob {
         val time = ent.attrs("time")("value").toString.toInt
         val weekDay = ent.attrs("weekDay")("value").toString.toInt
         val capacity = ent.attrs("capacity")("value").toString.toInt
-        PredictionRequest(year, month, day, weekDay, time, capacity)
+        val dateObserved = ent.attrs("dateObserved")("value").toString
+        PredictionRequest(year, month, day, weekDay, time, capacity, dateObserved)
       })
 
     // Feed each entity into the prediction model
@@ -72,7 +74,7 @@ object PredictionJob {
           .transform(df)
         val predictions = model
           .transform(vectorizedFeatures)
-          .select("capacity", "prediction", "year", "month", "day", "time")
+          .select("capacity", "prediction", "year", "month", "day", "time", "dateObserved")
 
         predictions.toJavaRDD
     })
@@ -81,7 +83,8 @@ object PredictionJob {
         pred.get(2).toString.toInt,
         pred.get(3).toString.toInt,
         pred.get(4).toString.toInt,
-        pred.get(5).toString.toInt)
+        pred.get(5).toString.toInt,
+        pred.get(6).toString)
     )
 
     // Convert the output to an OrionSinkObject and send to Context Broker
