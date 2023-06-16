@@ -5,9 +5,6 @@ services:
       context: ./docker
       target: submit
     container_name: spark-submit-train
-    depends_on:
-      - spark-master
-      - spark-worker
     ports:
       - "4040:4040"
     environment:
