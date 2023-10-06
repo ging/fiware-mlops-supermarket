@@ -21,4 +21,6 @@ services:
 
 networks:
   fiware:
+    external: true
+    name: fiware
 

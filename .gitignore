@@ -5,6 +5,8 @@ prediction-job/mlflow/artifacts/*
 prediction-job/mlflow/mlflow.db
 web/.env
 maven/docker/prediction-job/*
+__pycache__
+logs
 venv
 .metals
 .vscode

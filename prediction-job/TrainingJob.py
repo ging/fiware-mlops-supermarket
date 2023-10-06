@@ -49,7 +49,7 @@ def train():
         .schema(schema) \
         .option("header", "true") \
         .option("delimiter", ",") \
-        .load("./prediction-job/"+CSV_FILE) \
+        .load("/prediction-job/"+CSV_FILE) \
         .drop("id") \
         .withColumnRenamed("items", "label")
 
@@ -103,7 +103,7 @@ def train():
     mlflow.log_metric("rmse", rmse)
     mlflow.log_metric("r2", r2)
 
-    model_path = "./prediction-job/model"
+    model_path = "/prediction-job/model"
     rf_model = model.stages[1]
 
     # Register model
@@ -112,7 +112,7 @@ def train():
 
     client = MlflowClient(tracking_uri=MLFLOW_URI)
     model_version = client.get_latest_versions(model_name, stages=["None"])[0].version
-    rf_model.write().overwrite().save(model_path+"/"+model_version)
+    rf_model.save(model_path+"/"+model_version)
 
 
 
