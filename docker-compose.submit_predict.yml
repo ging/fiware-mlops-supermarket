@@ -21,3 +21,5 @@ services:
       - ./prediction-job:/prediction-job
 networks:
   fiware:
+    external: true
+    name: fiware

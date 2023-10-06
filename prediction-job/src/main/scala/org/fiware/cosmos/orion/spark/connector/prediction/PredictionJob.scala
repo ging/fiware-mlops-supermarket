@@ -28,7 +28,7 @@ object PredictionJob {
   final val URL_CB = s"http://$HOST_CB:1026/ngsi-ld/v1/entities/urn:ngsi-ld:SupermarketForecast:001/attrs"
   final val CONTENT_TYPE = ContentType.JSON
   final val METHOD = HTTPMethod.PATCH
-  final val MODEL_PATH = s"./prediction-job/model/$MODEL_VERSION"
+  final val MODEL_PATH = s"/prediction-job/model/$MODEL_VERSION"
 
 
   def main(args: Array[String]): Unit = {

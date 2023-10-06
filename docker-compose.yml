@@ -1,53 +1,53 @@
 version: "3.5"
 services:
-  mongo:
-    container_name: mongo
-    image: mongo:4.4
-    command: --nojournal
-    networks:
-      - fiware
-    ports:
-      - "27017:27017"
-    environment:
-      - MONGO_INITDB_ROOT_USERNAME=root
-      - MONGO_INITDB_ROOT_PASSWORD=example
-    healthcheck:
-      test: |
-        host=`hostname --ip-address || echo '127.0.0.1'`; 
-        mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
+  # mongo:
+  #   container_name: mongo
+  #   image: mongo:4.4
+  #   command: --nojournal
+  #   networks:
+  #     - fiware
+  #   ports:
+  #     - "27017:27017"
+  #   environment:
+  #     - MONGO_INITDB_ROOT_USERNAME=root
+  #     - MONGO_INITDB_ROOT_PASSWORD=example
+  #   healthcheck:
+  #     test: |
+  #       host=`hostname --ip-address || echo '127.0.0.1'`; 
+  #       mongo --quiet $host/test --eval 'quit(db.runCommand({ ping: 1 }).ok ? 0 : 2)' && echo 0 || echo 1
 
-  orion:
-    image: fiware/orion-ld:1.0.1
-    container_name: orion
-    depends_on:
-      - mongo
-    command: -dbhost mongo -dbuser root -dbpwd example #-logLevel DEBUG
-    ports:
-      - "1026:1026"
-    environment:
-      ORIONLD_MONGO_USER: root
-      ORIONLD_MONGO_PASSWORD: example
-    networks:
-      - fiware
-    healthcheck:
-      test: curl --fail -s http://orion:1026/version || exit 1
+  # orion:
+  #   image: fiware/orion-ld:1.0.1
+  #   container_name: orion
+  #   depends_on:
+  #     - mongo
+  #   command: -dbhost mongo -dbuser root -dbpwd example #-logLevel DEBUG
+  #   ports:
+  #     - "1026:1026"
+  #   environment:
+  #     ORIONLD_MONGO_USER: root
+  #     ORIONLD_MONGO_PASSWORD: example
+  #   networks:
+  #     - fiware
+  #   healthcheck:
+  #     test: curl --fail -s http://orion:1026/version || exit 1
 
-  web:
-    container_name: web
-    build:
-      context: ./web
-    ports:
-      - "3000:3000"
-    depends_on:
-      - orion
-    networks:
-      - fiware
-    command: bash -c "sh /entities/awaitForOrion.sh && sh /entities/createPredictionEntities.sh && sh /entities/createSubscriptions.sh && npm start"    
-    environment:
-      - URL_CB=http://orion:1026
-      - MONGO_URI=mongodb://root:example@mongo:27017/sth_test?authSource=admin
-    volumes:
-      - ./entities:/entities
+  # web:
+  #   container_name: web
+  #   build:
+  #     context: ./web
+  #   ports:
+  #     - "3000:3000"
+  #   depends_on:
+  #     - orion
+  #   networks:
+  #     - fiware
+  #   command: bash -c "sh /entities/awaitForOrion.sh && sh /entities/createPredictionEntities.sh && sh /entities/createSubscriptions.sh && npm start"    
+  #   environment:
+  #     - URL_CB=http://orion:1026
+  #     - MONGO_URI=mongodb://root:example@mongo:27017/sth_test?authSource=admin
+  #   volumes:
+  #     - ./entities:/entities
 
   spark-master:
     build:
@@ -55,7 +55,7 @@ services:
       target: master
     container_name: spark-master
     ports:
-      - "8080:8080"
+      - "8081:8080"
       - "7077:7077"
       - "9001:9001"
     environment:
@@ -76,7 +76,7 @@ services:
     depends_on:
       - spark-master
     ports:
-      - "8081:8081"
+      - "8082:8081"
     environment:
       - "SPARK_MASTER=spark://spark-master:7077"
       - "INIT_DAEMON_STEP=setup_spark"
@@ -92,7 +92,7 @@ services:
     image: ghcr.io/mlflow/mlflow:v1.30.0
     container_name: mlflow_server
     ports:
-      - "5000:5000"
+      - "5001:5000"
     command: mlflow server --host 0.0.0.0 --backend-store-uri sqlite:///prediction-job/mlflow/mlflow.db --default-artifact-root ./prediction-job/mlflow/artifacts 
     volumes:
       - ./prediction-job:/prediction-job
@@ -101,3 +101,5 @@ services:
 
 networks:
   fiware:
+    external: true
+    name: fiware
