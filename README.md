@@ -23,7 +23,9 @@ docker compose -f docker-compose.submit_predict.yml up -d
 
 - Access http://localhost:3000 to watch the web
 
-- Access http://localhost:8080 to access the Spark Cluste UI client
+- Access http://localhost:8081 to access the Spark Cluste UI client
+
+- Access http://localhost:8080 to access the Airflow Web UI
 
 
 Train again
