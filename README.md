@@ -1,9 +1,9 @@
 # FIWARE Machine Learning and MLOps - Supermarket example
 
-1. Instructions
-
 First time:
+```
 docker compose -f docker-compose.maven.yml up -d
+```
 
 Start base infraestructure
 ```
