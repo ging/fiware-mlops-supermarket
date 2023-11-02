@@ -10,6 +10,11 @@ Start base infraestructure
 docker compose up -d
 ```
 
+```
+cd airflow
+docker compose up -d
+```
+
 ## With Airflow as orchestrator
 
 - Access http://localhost:5000 to access MLFlow client
