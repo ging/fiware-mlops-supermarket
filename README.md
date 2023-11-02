@@ -21,9 +21,9 @@ docker compose up -d
 
 - Access http://localhost:3000 to watch the web
 
-- Access http://localhost:8081 to access the Spark Cluste UI client
+- Access http://localhost:8081 to access the Spark Cluster UI client
 
-- Access http://localhost:8080 to access the Airflow Web UI
+- Access http://localhost:8080 to access the Airflow Web UI (user: airflow, password: airflow)
 
 
 Run airflow flows from the web (first training then predicting)
