@@ -1,4 +1,8 @@
 # FIWARE Machine Learning and MLOps - Supermarket example
+Create Docker Network
+```
+docker network create fiware
+```
 
 First time:
 ```
